@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *  创建接口，并在MiniServiceImpl中实现
+ *  这种方式代码逻辑的实现写在MiniServiceImpl中
+ */
+
 @Service
 public interface MinioService {
 

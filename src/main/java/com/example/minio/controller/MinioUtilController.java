@@ -1,6 +1,7 @@
 package com.example.minio.controller;
 
-import com.example.minio.service.MinioService;
+import com.example.minio.service.MinioUtilService;
+import com.example.minio.utils.MinioUtils;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.apache.commons.lang.StringUtils;
@@ -15,10 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class MinioController {
+@RequestMapping(value = "/util")
+public class MinioUtilController {
 
     @Autowired
-    public MinioService minioService;
+    private MinioUtilService minioUtilService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<String> create(@RequestParam("bucketName") String buckName ){
@@ -26,9 +28,9 @@ public class MinioController {
             return ResponseEntity.badRequest().body("参数不能为空");
         }
 
-        Map<String, Boolean> map = minioService.createBucket(buckName);
-        if(map.containsKey("success")){
-            if(map.get("success")){
+        Map<String, Boolean> map = minioUtilService.createBucket(buckName);
+        if(map.containsKey("correct")){
+            if(map.get("correct")){
                 return ResponseEntity.ok().body("创建成功");
             }else {
                 return ResponseEntity.ok().body("创建失败");
@@ -44,9 +46,9 @@ public class MinioController {
             return ResponseEntity.badRequest().body("参数不能为空");
         }
 
-        Map<String, Boolean> map = minioService.removeBucket(buckName);
-        if(map.containsKey("success")){
-            if(map.get("success")){
+        Map<String, Boolean> map = minioUtilService.removeBucket(buckName);
+        if(map.containsKey("correct")){
+            if(map.get("correct")){
                 return ResponseEntity.ok().body("删除成功");
             }else {
                 return ResponseEntity.ok().body("删除失败");
@@ -58,25 +60,25 @@ public class MinioController {
 
     @RequestMapping(value = "/listBucket", method = RequestMethod.GET)
     public ResponseEntity<List<Bucket>> listBucket() {
-        Map<String, List<Bucket>> map = minioService.ListBucket();
-        if(map.containsKey("success")){
-            return ResponseEntity.ok(map.get("success"));
+        System.out.println("2333");
+        Map<String, List<Bucket>> map = minioUtilService.ListBucket();
+        if(map.containsKey("correct")){
+            return ResponseEntity.ok(map.get("correct"));
         }
         else {
-            return ResponseEntity.status(500).body(map.get("failed"));
+            return ResponseEntity.status(500).body(map.get("wrong"));
         }
 
     }
 
     @RequestMapping(value = "/listObjects", method = RequestMethod.GET)
     public ResponseEntity<List<Item>> listObjects(@RequestParam("bucketName") String buckName){
-        Map<String, List<Item>> map = minioService.ListObjects(buckName);
-        if(map.containsKey("success")){
-            return ResponseEntity.ok(map.get("success"));
+        Map<String, List<Item>> map = minioUtilService.ListObjects(buckName);
+        if(map.containsKey("correct")){
+            return ResponseEntity.ok(map.get("correct"));
         }
         else {
-            return ResponseEntity.status(500).body(map.get("failed"));
+            return ResponseEntity.status(500).body(map.get("wrong"));
         }
     }
-
 }
