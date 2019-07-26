@@ -1,7 +1,6 @@
 package com.example.minio.controller;
 
 import com.example.minio.service.MinioUtilService;
-import com.example.minio.utils.MinioUtils;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.apache.commons.lang.StringUtils;
@@ -60,7 +59,6 @@ public class MinioUtilController {
 
     @RequestMapping(value = "/listBucket", method = RequestMethod.GET)
     public ResponseEntity<List<Bucket>> listBucket() {
-        System.out.println("2333");
         Map<String, List<Bucket>> map = minioUtilService.ListBucket();
         if(map.containsKey("correct")){
             return ResponseEntity.ok(map.get("correct"));
