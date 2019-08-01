@@ -3,6 +3,7 @@ package com.example.minio.controller;
 import com.example.minio.service.MinioUtilService;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+@Api(value = "minio操作接口")
 @RestController
 @RequestMapping(value = "/util")
 public class MinioUtilController {
@@ -21,6 +23,12 @@ public class MinioUtilController {
     @Autowired
     private MinioUtilService minioUtilService;
 
+    @ApiOperation(value = "创建指定的存储桶", notes = "需要输入合法的存储桶的名称")
+    @ApiImplicitParam(name = "bucketName", value = "存储桶的名字", required = true, dataType = "String")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "服务器成功处理消息，处理结果显示在返回的body中"),
+            @ApiResponse(code = 500, message = "服务器抛出异常")
+    })
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<String> create(@RequestParam("bucketName") String buckName ){
         if(StringUtils.isEmpty(buckName)){
@@ -39,6 +47,12 @@ public class MinioUtilController {
         }
     }
 
+    @ApiOperation(value = "删除指定的存储桶", notes = "删除存储桶却无法删除存储桶中保存的对象")
+    @ApiImplicitParam(name = "bucketName", value = "存储桶的名称", required = true, dataType = "String")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "服务器成功处理消息，处理结果显示在返回的body中"),
+            @ApiResponse(code = 500, message = "服务器抛出异常")
+    })
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public ResponseEntity<String> remove(@RequestParam("bucketName") String buckName ){
         if(StringUtils.isEmpty(buckName)){
@@ -57,6 +71,11 @@ public class MinioUtilController {
         }
     }
 
+    @ApiOperation(value = "列出所有存储桶的名称", notes = "不存在则返回空")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "服务器成功处理消息，处理结果显示在返回的body中"),
+            @ApiResponse(code = 500, message = "服务器抛出异常")
+    })
     @RequestMapping(value = "/listBucket", method = RequestMethod.GET)
     public ResponseEntity<List<Bucket>> listBucket() {
         Map<String, List<Bucket>> map = minioUtilService.ListBucket();
@@ -69,6 +88,12 @@ public class MinioUtilController {
 
     }
 
+    @ApiOperation(value = "列出指定存储桶中的所有对象", notes = "存储桶需要存在")
+    @ApiImplicitParam(name = "bucketName", value = "存储桶的名称", required = true, dataType = "String")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "服务器成功处理消息，处理结果显示在返回的body中"),
+            @ApiResponse(code = 500, message = "服务器抛出异常")
+    })
     @RequestMapping(value = "/listObjects", method = RequestMethod.GET)
     public ResponseEntity<List<Item>> listObjects(@RequestParam("bucketName") String buckName){
         Map<String, List<Item>> map = minioUtilService.ListObjects(buckName);
